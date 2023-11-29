@@ -161,8 +161,8 @@ TrackEvent * parseEvent(int tick, int track, uint8_t const *& dataStart, Message
         {
             // Reuse lastEventTypeByte as the event type.
             // eventTypeByte is actually the first parameter
-            event->m->data[0] = (uint8_t) type;
             type = lastEventTypeByte;
+            event->m->data[0] = (uint8_t) type;
         }
         else 
         {
