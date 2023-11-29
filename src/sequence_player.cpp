@@ -75,6 +75,13 @@ void MidiSequencePlayer::loadSingleTrack(const MidiTrack & track, double ticksPe
         double deltaTimestampInSeconds = ticksToSeconds( int(localElapsedTicks) );
         //if (m->m->getMessageType() == MessageType::NOTE_ON)
         addTimestampedEvent(0, deltaTimestampInSeconds, m); // already checks if non-meta message
+        if (m->m->isMetaEvent() && m->m->getMetaEventSubtype() == MetaEventType::TEMPO_CHANGE) {
+            const uint8_t *pdata = &(m->m->data[3]);
+            uint32_t us_per_quarter_note = read_uint24_be(pdata);
+            std::cout << "Tempo us/quarter note: " << us_per_quarter_note << std::endl;
+            this->beatsPerMinute = 60000000/us_per_quarter_note;
+            std::cout << "BPM: " << this->beatsPerMinute << std::endl;
+        }
     }
 }
 
