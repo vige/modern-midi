@@ -195,7 +195,9 @@ TrackEvent * parseEvent(int tick, int track, uint8_t const *& dataStart, Message
                 event->m->data[2] = uint8_t(*dataStart++);
                 return event;
             default:
-                throw std::runtime_error("Unrecognised MIDI event type");
+                std::string error_string = std::string("Unrecognised MIDI event type: ")
+                    + std::to_string((uint8_t)type & 0xF0);
+                throw std::runtime_error(error_string);
         }
     }
 }
