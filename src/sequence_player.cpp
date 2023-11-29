@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace mm;
 
-MidiSequencePlayer::MidiSequencePlayer(MidiOutput & output) : shouldSequence(false), output(output)
+MidiSequencePlayer::MidiSequencePlayer(MidiOutput & output) : output(output), shouldSequence(false)
 {
 
 }

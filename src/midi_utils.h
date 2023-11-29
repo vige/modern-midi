@@ -52,7 +52,7 @@ namespace mm
     // to a delta tick format
     inline void ConvertToDeltaTicks(std::vector<MidiTrack> & tracks)
     {
-        for (int i = 0; i < tracks.size(); i++)
+        for (unsigned int i = 0; i < tracks.size(); i++)
         {
             for (auto & event_list : tracks)
             {
@@ -73,7 +73,7 @@ namespace mm
     // to an absolute tick format
     inline void ConvertToAbsoluteTicks(std::vector<MidiTrack> & tracks)
     {
-        for (int i = 0; i < tracks.size(); i++)
+        for (unsigned int i = 0; i < tracks.size(); i++)
         {
             for (auto & event_list : tracks)
             {

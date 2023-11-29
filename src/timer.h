@@ -123,7 +123,54 @@ public:
 };
 
 #else
-    #error Unimplemented timer for desired platform
+// Assume POSIX
+#include <time.h>
+
+class PlatformTimer
+{
+    struct timespec start_timestamp;
+    struct timespec stop_timestamp;
+public:
+    PlatformTimer()
+    {
+    }
+    
+    virtual ~PlatformTimer() {}
+    
+    void start()
+    {
+        clock_gettime(CLOCK_MONOTONIC, &start_timestamp);
+    }
+    
+    void stop()
+    {
+        clock_gettime(CLOCK_MONOTONIC, &stop_timestamp); 
+    }
+    
+    double running_time_ms() const
+    {
+        struct timespec current_time;
+        clock_gettime(CLOCK_MONOTONIC, &current_time);
+        return (double)((current_time.tv_sec - start_timestamp.tv_sec)*1000
+            + (current_time.tv_nsec - start_timestamp.tv_nsec)/1000000);
+    }
+    
+    double running_time_s() const
+    {
+        struct timespec current_time;
+        clock_gettime(CLOCK_MONOTONIC, &current_time);
+        return (double)((current_time.tv_sec - start_timestamp.tv_sec)
+            + (current_time.tv_nsec - start_timestamp.tv_nsec)/1000000000);
+    }
+    
+    double diff_ms() const
+    {
+        return (double)((stop_timestamp.tv_sec - start_timestamp.tv_sec)*1000
+            + (stop_timestamp.tv_nsec - start_timestamp.tv_nsec)/1000000);
+    }
+};
+
+
 #endif
 
 #endif
