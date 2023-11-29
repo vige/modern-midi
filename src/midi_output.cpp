@@ -112,6 +112,10 @@ bool MidiOutput::sendRaw(std::vector<unsigned char> msg)
     if (!attached) throw std::runtime_error("interface not bound to a port");
     try 
     {
+        // std::cout << "sending message: ";
+        // for(unsigned char i: msg)
+        //     std::cout << std::hex << (unsigned int)i << ' ';
+        // std::cout << std::endl;
         outputDevice->sendMessage(&msg);
     }
     catch(RtMidiError & e) 
@@ -131,3 +135,4 @@ bool MidiOutput::send(const mm::MidiMessage & msg)
 {
     return sendRaw(static_cast<std::vector<unsigned char>>(msg.data));
 }
+

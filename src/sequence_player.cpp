@@ -73,7 +73,8 @@ void MidiSequencePlayer::loadSingleTrack(const MidiTrack & track, double ticksPe
     {
         localElapsedTicks += m->tick;
         double deltaTimestampInSeconds = ticksToSeconds( int(localElapsedTicks) );
-        if (m->m->getMessageType() == MessageType::NOTE_ON) addTimestampedEvent(0, deltaTimestampInSeconds, m); // already checks if non-meta message
+        //if (m->m->getMessageType() == MessageType::NOTE_ON)
+        addTimestampedEvent(0, deltaTimestampInSeconds, m); // already checks if non-meta message
     }
 }
 
@@ -123,13 +124,15 @@ void MidiSequencePlayer::run()
     {
         auto outputMsg = eventList[eventCursor];
         
-        //std::cout << "Delta: " << lastTime - outputMsg.timestamp << std::endl;
+//        std::cout << "Delta: " << outputMsg.timestamp - lastTime << std::endl;
 
         while((timer.running_time_s()) <= (outputMsg.timestamp))
         {
             continue;
         }
 
+//        std::cout << "running time: " << timer.running_time_s() << std::endl;
+        
         output.send(*outputMsg.msg);
 
         if (shouldSequence == false) 

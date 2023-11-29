@@ -160,7 +160,7 @@ public:
         struct timespec current_time;
         clock_gettime(CLOCK_MONOTONIC, &current_time);
         return (double)((current_time.tv_sec - start_timestamp.tv_sec)
-            + (current_time.tv_nsec - start_timestamp.tv_nsec)/1000000000);
+            + (double)(current_time.tv_nsec - start_timestamp.tv_nsec)/1000000000);
     }
     
     double diff_ms() const
