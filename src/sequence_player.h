@@ -58,7 +58,7 @@ class MidiSequencePlayer
     
     int secondsToTicks(float seconds);
 
-    float beatsPerMinute;
+    double beatsPerMinute;
     double ticksPerBeat;
     double msPerTick;
     
@@ -75,7 +75,7 @@ public:
     MidiSequencePlayer(MidiOutput & output);
     ~MidiSequencePlayer();
         
-    void loadSingleTrack(const MidiTrack & track, double ticksPerBeat = 480, double beatsPerMinute = 120);
+    void loadSingleTrack(int trackNumber, const MidiTrack & track);
     void loadMultipleTracks(const std::vector<MidiTrack> & tracks, double ticksPerBeat = 480, double beatsPerMinute = 120);
 
     void start();
@@ -94,7 +94,9 @@ public:
 
     ConcurrentQueue<MidiPlayerEvent> eventQueue;
 
-    std::vector<MidiPlayerEvent> eventList; // indexed by track
+    typedef std::vector<MidiPlayerEvent> EventList;
+    std::vector<EventList> eventList; // indexed by track
+    
 };
 
 } // mm

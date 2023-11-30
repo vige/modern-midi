@@ -164,7 +164,7 @@ TrackEvent * parseEvent(int tick, int track, uint8_t const *& dataStart, Message
             event->m->data[1] = (uint8_t) type;
             type = lastEventTypeByte;
             event->m->data[0] = (uint8_t) type;
-//            std::cout << "running status:" << std::hex << (unsigned int)m->data[0] << std::hex << (unsigned int)m->data[1] << std::hex <<  (unsigned int)(*dataStart) << std::endl;
+            std::cout << "running status:" << std::hex << (unsigned int)m->data[0] << std::hex << (unsigned int)m->data[1] << std::hex <<  (unsigned int)(*dataStart) << std::endl;
         }
         else 
         {
@@ -267,7 +267,7 @@ void MidiFileReader::parseInternal(const std::vector<uint8_t> & buffer)
         while (dataPtr < dataEnd) 
         {
             auto tick = read_variable_length(dataPtr);
-//            std::cout << "tick: " << tick << std::endl;
+            std::cout << "tick: " << tick << std::endl;
             
             if (useAbsoluteTicks)
             {
@@ -285,10 +285,10 @@ void MidiFileReader::parseInternal(const std::vector<uint8_t> & buffer)
                 runningEvent = MessageType(ev->m->data[0]);
             }
 
-//            std::cout << "read event: ";
-//            for(unsigned char i: ev->m->data)
-//               std::cout << std::hex << (unsigned int)i << ' ';
-//            std::cout << std::endl;
+            std::cout << "read event: ";
+            for(unsigned char i: ev->m->data)
+               std::cout << std::hex << (unsigned int)i << ' ';
+            std::cout << std::endl;
             
             track.push_back(ev);
         }
