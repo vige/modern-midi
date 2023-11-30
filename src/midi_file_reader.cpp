@@ -190,6 +190,7 @@ TrackEvent * parseEvent(int tick, int track, uint8_t const *& dataStart, Message
                 event->m->data[2] = uint8_t(*dataStart++);
                 return event;
             case MessageType::PROGRAM_CHANGE:
+                event->m->data.resize(2);
                 return event;
             case MessageType::AFTERTOUCH:
                 return event;
