@@ -76,6 +76,13 @@ bool MidiOutput::openPort(std::string deviceName)
     return openPort(port);
 }
 
+bool MidiOutput::openDevicePort(std::string deviceFilename)
+{
+    info = {0, false, ""};
+    info.device = deviceFilename;
+    return true;
+}
+
 bool MidiOutput::openVirtualPort(std::string portName) 
 {
 #if defined (MM_PLATFORM_WINDOWS)

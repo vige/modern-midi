@@ -47,6 +47,7 @@ public:
 
     bool openPort(int32_t portNumber);
     bool openPort(std::string deviceName);
+    bool openDevicePort(std::string deviceFilename);
     bool openVirtualPort(std::string portName);
     void closePort();
     

@@ -92,6 +92,7 @@ namespace mm
         int32_t idx = -1; 
         bool emulated = false;
         std::string name = "";
+        std::string device = "";
         MidiDeviceInfo() {};
         MidiDeviceInfo(int32_t idx, bool e, std::string n) : idx(idx), emulated(e), name(n) {};
     };
