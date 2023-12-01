@@ -76,7 +76,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #pragma comment(lib, "winmm.lib")
 #endif
 
-#include <rtmidi/RtMidi.h>
+#if defined(MM_TINYMIDI)
+    #include <rawmidi.h>
+#else
+    #include <rtmidi/RtMidi.h>
+#endif    
 
 namespace mm
 {

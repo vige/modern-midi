@@ -50,15 +50,23 @@ public:
     bool openDevicePort(std::string deviceFilename);
     bool openVirtualPort(std::string portName);
     void closePort();
+
+    bool isAttached();
     
     bool send(const std::vector<uint8_t> & msg);
     bool send(const mm::MidiMessage & msg);
 
+#ifndef MM_TINYMIDI    
     RtMidiOut * getOutputDevice() { return outputDevice.get(); }
-
+#endif
+    
     mm::MidiDeviceInfo info;
 
+#if defined(MM_TINYMIDI)
+    std::string clientName;
+#else   
     std::unique_ptr<RtMidiOut> outputDevice;
+#endif    
 };
 
 }

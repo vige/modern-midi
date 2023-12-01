@@ -29,7 +29,11 @@ using namespace mm;
 
 MidiOutput::MidiOutput(const std::string & name) 
 {
+#if defined(MM_TINYMIDI)
+    clientName=name;
+#else    
     outputDevice.reset(new RtMidiOut(RtMidi::UNSPECIFIED, name));
+#endif    
 }
 
 MidiOutput::~MidiOutput() 
@@ -38,7 +42,8 @@ MidiOutput::~MidiOutput()
 }
 
 bool MidiOutput::openPort(int32_t portNumber) 
-{   
+{
+#ifndef MM_TINYMIDI    
     if (attached) throw std::runtime_error("device is already attached to a port");
     try 
     {
@@ -53,12 +58,14 @@ bool MidiOutput::openPort(int32_t portNumber)
     }
 
     info = {portNumber, false, outputDevice->getPortName(portNumber)};
+#endif    
     return true;
 }
 
 bool MidiOutput::openPort(std::string deviceName) 
 {
     int port = -1;
+#ifndef MM_TINYMIDI    
     for (uint32_t i = 0; i < outputDevice->getPortCount(); ++i) 
     {
         std::string name = outputDevice->getPortName(i);
@@ -72,7 +79,8 @@ bool MidiOutput::openPort(std::string deviceName)
     {
         std::cerr << "Port not available" << std::endl;
         return false;
-    } 
+    }
+#endif    
     return openPort(port);
 }
 
@@ -88,7 +96,7 @@ bool MidiOutput::openVirtualPort(std::string portName)
 #if defined (MM_PLATFORM_WINDOWS)
     throw std::runtime_error("virtual ports are unsupported on windows");
 #endif
-    
+#ifndef MM_TINYMIDI
     if (attached) throw std::runtime_error("device is already attached to a port");
     try 
     {
@@ -103,20 +111,35 @@ bool MidiOutput::openVirtualPort(std::string portName)
     }
 
     info = {-1, true, portName};
+#endif    
     return true;
 }
 
 void MidiOutput::closePort() 
 {
+#if defined(MM_TINYMIDI)
+    // TODO
+#else
     outputDevice->closePort();
+#endif
     info = {-1, false, ""};
     attached = false;
 }
 
+bool MidiOutput::isAttached()
+{
+    return attached;
+}
+
 bool MidiOutput::sendRaw(std::vector<unsigned char> msg)
 {
+#ifndef MM_TINYMIDI    
     if (!outputDevice) throw std::runtime_error("output device not initialized");
+#endif    
     if (!attached) throw std::runtime_error("interface not bound to a port");
+#if defined(MM_TINYMIDI)
+    // TODO
+#else    
     try 
     {
         // std::cout << "sending message: ";
@@ -130,6 +153,7 @@ bool MidiOutput::sendRaw(std::vector<unsigned char> msg)
         std::cerr << e.what() << std::endl;
         return false;
     }
+#endif    
     return true;
 }
 
