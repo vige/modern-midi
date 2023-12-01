@@ -154,14 +154,14 @@ void MidiSequencePlayer::run()
         if (!nextEvent) {
             running = false;
         } else {
-            std::cout << "Delta: " << nextEvent->timestamp - lastTime << std::endl;
+//            std::cout << "Delta: " << nextEvent->timestamp - lastTime << std::endl;
 
             while((timer.running_time_s()) <= (nextEvent->timestamp))
             {
                 continue;
             }
 
-            std::cout << "running time: " << timer.running_time_s() << std::endl;
+//            std::cout << "running time: " << timer.running_time_s() << std::endl;
         
             output.send(*(nextEvent->msg));
 
