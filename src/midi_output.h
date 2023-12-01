@@ -64,6 +64,7 @@ public:
 
 #if defined(MM_TINYMIDI)
     std::string clientName;
+    snd_rawmidi_t *rawmidi_output = nullptr;
 #else   
     std::unique_ptr<RtMidiOut> outputDevice;
 #endif    

@@ -88,6 +88,10 @@ bool MidiOutput::openDevicePort(std::string deviceFilename)
 {
     info = {0, false, ""};
     info.device = deviceFilename;
+    if (rawmidi_hw_open(0, &rawmidi_output, deviceFilename.c_str(), clientName.c_str(), 0) < 0)
+        throw std::runtime_error("Could not open midi output for writing");
+    std::cout << "rawmidi_hw_open returned" << std::endl;
+    attached = true;
     return true;
 }
 
@@ -118,7 +122,8 @@ bool MidiOutput::openVirtualPort(std::string portName)
 void MidiOutput::closePort() 
 {
 #if defined(MM_TINYMIDI)
-    // TODO
+    if (rawmidi_output)
+        rawmidi_hw_close(rawmidi_output);
 #else
     outputDevice->closePort();
 #endif
@@ -138,7 +143,7 @@ bool MidiOutput::sendRaw(std::vector<unsigned char> msg)
 #endif    
     if (!attached) throw std::runtime_error("interface not bound to a port");
 #if defined(MM_TINYMIDI)
-    // TODO
+    rawmidi_hw_write(rawmidi_output, msg.data(), msg.size());
 #else    
     try 
     {
