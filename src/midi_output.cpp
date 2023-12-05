@@ -88,7 +88,7 @@ bool MidiOutput::openDevicePort(std::string deviceFilename)
 {
     info = {0, false, ""};
     info.device = deviceFilename;
-    if (rawmidi_hw_open(0, &rawmidi_output, deviceFilename.c_str(), clientName.c_str(), 0) < 0)
+    if (rawmidi_hw_open(0, &rawmidi_output, deviceFilename.c_str(), clientName.c_str(), SND_RAWMIDI_SYNC) < 0)
         throw std::runtime_error("Could not open midi output for writing");
     std::cout << "rawmidi_hw_open returned" << std::endl;
     attached = true;
