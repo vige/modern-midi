@@ -119,7 +119,7 @@ void MidiSequencePlayer::run()
     std::vector<size_t> eventCursors(numTracks);
     bool running = true;
     int timerStartTick = 0;
-
+    u_int8_t runningStatus = 0;
     
     PlatformTimer timer;
     timer.start();
@@ -162,7 +162,12 @@ void MidiSequencePlayer::run()
                 timer.start();
 
             } else {
-                output.send(msg);
+                if (msg.data[0] == runningStatus) {
+                    output.sendRunningStatus(msg);
+                } else {
+                    output.send(msg);
+                    runningStatus = msg.data[0];
+                }
             }
             if (shouldSequence == false)
                 break;

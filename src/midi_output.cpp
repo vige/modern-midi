@@ -172,3 +172,13 @@ bool MidiOutput::send(const mm::MidiMessage & msg)
     return sendRaw(static_cast<std::vector<unsigned char>>(msg.data));
 }
 
+bool MidiOutput::sendRunningStatus(const MidiMessage &msg)
+{
+#if defined(MM_TINYMIDI)
+    rawmidi_hw_write(rawmidi_output, &(msg.data[1]), msg.data.size()-1);
+    return true;
+#else
+    return false;
+#endif
+}
+

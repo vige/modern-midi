@@ -55,6 +55,7 @@ public:
     
     bool send(const std::vector<uint8_t> & msg);
     bool send(const mm::MidiMessage & msg);
+    bool sendRunningStatus(const mm::MidiMessage & msg);
 
 #ifndef MM_TINYMIDI    
     RtMidiOut * getOutputDevice() { return outputDevice.get(); }
