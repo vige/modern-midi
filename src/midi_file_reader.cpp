@@ -51,7 +51,7 @@ TrackEvent * parseEvent(int tick, int track, uint8_t const *& dataStart, Message
     auto m = std::make_shared<MidiMessage>();
     TrackEvent * event = new TrackEvent(tick, track, m);
 
-    if (((uint8_t) type & 0x8F) == 0x8F)
+    if (((uint8_t) type & 0xF0) == 0xF0)
     {
         // Meta event 
         if ((uint8_t) type == 0xFF) 
