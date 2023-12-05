@@ -169,9 +169,14 @@ void MidiSequencePlayer::run()
                     runningStatus = msg.data[0];
                 }
             }
-            if (shouldSequence == false)
+            if (shouldSequence == false) {
+                for(int i = 0; i < 0x0F; i++){
+                    MidiMessage allSoundOff(0xB0|i,120,0, 0.0);
+                    output.send(allSoundOff);
+                }
+                        
                 break;
-
+            }
             eventCursors[nextEvent->trackIdx]++;
         }
     }
