@@ -158,6 +158,9 @@ void MidiSequencePlayer::run()
                 std::cout << "Tempo us/quarter note: " << us_per_quarter_note << std::endl;
                 this->beatsPerMinute = 60000000/us_per_quarter_note;
                 std::cout << "BPM: " << this->beatsPerMinute << std::endl;
+                timerStartTick = min_tick;
+                timer.start();
+
             } else {
                 output.send(msg);
             }
