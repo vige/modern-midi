@@ -52,7 +52,7 @@ class MidiSequencePlayer
     void run();
     
     // Default behavior of this function is to reject playing any metadata events
-    void addTimestampedEvent(int track, double when, std::shared_ptr<TrackEvent> ev);
+    void addTickEvent(int track, int when, std::shared_ptr<TrackEvent> ev);
     
     double ticksToSeconds(int ticks);
     

@@ -40,8 +40,8 @@ namespace mm
 
     struct MidiPlayerEvent
     {
-        MidiPlayerEvent(double t,std::shared_ptr<MidiMessage> m, int track) : timestamp(t), trackIdx(track), msg(m) {}
-        double timestamp;
+        MidiPlayerEvent(int t,std::shared_ptr<MidiMessage> m, int track) : tick(t), trackIdx(track), msg(m) {}
+        int tick;
         int trackIdx;
         std::shared_ptr<MidiMessage> msg;
     };

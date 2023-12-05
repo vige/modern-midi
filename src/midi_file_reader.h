@@ -96,8 +96,8 @@ public:
 
     double getEndTime();
         
-    float ticksPerBeat; // precision (number of ticks distinguishable per second)
-    float startingTempo;
+    int ticksPerBeat;
+    int startingTempo;
     
     bool useAbsoluteTicks = false;
     

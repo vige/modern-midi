@@ -60,26 +60,15 @@ int MidiSequencePlayer::secondsToTicks(float seconds)
 
 void MidiSequencePlayer::loadSingleTrack(int trackNumber, const MidiTrack & track)
 {
-    double localElapsedTicks = 0;
+    int localElapsedTicks = 0;
 
     // Events in track
     for (auto m : track)
     {
         localElapsedTicks += m->tick;
-        double deltaTimestampInSeconds = ticksToSeconds( int(localElapsedTicks) );
-        //if (m->m->getMessageType() == MessageType::NOTE_ON)
-        addTimestampedEvent(trackNumber, deltaTimestampInSeconds, m); // already checks if non-meta message
-        if (m->m->isMetaEvent() && m->m->getMetaEventSubtype() == MetaEventType::TEMPO_CHANGE) {
-            // we should really handle these while playing and not here
-            // i.e. we should have ticks in eventlist instead of time
-            // and calculate time for next event based on current tempo
-            // and tick diff
-            const uint8_t *pdata = &(m->m->data[3]);
-            uint32_t us_per_quarter_note = read_uint24_be(pdata);
-            std::cout << "Tempo us/quarter note: " << us_per_quarter_note << std::endl;
-            this->beatsPerMinute = 60000000/us_per_quarter_note;
-            std::cout << "BPM: " << this->beatsPerMinute << std::endl;
-        }
+
+        addTickEvent(trackNumber, localElapsedTicks, m); // already checks if non-meta message
+
         std::cout << "Added event " << StringFromMessageType(m->m->getMessageType()) << std::endl;
     }
 }
@@ -126,10 +115,11 @@ void MidiSequencePlayer::start()
     
 void MidiSequencePlayer::run()
 {
-    double lastTime = 0;
     int numTracks = eventList.size();
     std::vector<size_t> eventCursors(numTracks);
     bool running = true;
+    int timerStartTick = 0;
+
     
     PlatformTimer timer;
     timer.start();
@@ -138,37 +128,42 @@ void MidiSequencePlayer::run()
     while(running)
     {
         // find next event
-        double min_timestamp = 0;
+        int min_tick = 0;
         MidiPlayerEvent* nextEvent = nullptr;
         for (int i = 0; i < numTracks; i++)
         {
             EventList& track = eventList[i];
             if (eventCursors[i] < track.size()) {
-                if (track[eventCursors[i]].timestamp < min_timestamp
+                if (track[eventCursors[i]].tick < min_tick
                     || !nextEvent) {
                     nextEvent = &track[eventCursors[i]];
-                    min_timestamp = nextEvent->timestamp;
+                    min_tick = nextEvent->tick;
                 }
             }
         }
+
         if (!nextEvent) {
             running = false;
         } else {
-//            std::cout << "Delta: " << nextEvent->timestamp - lastTime << std::endl;
-
-            while((timer.running_time_s()) <= (nextEvent->timestamp))
+            // calculate next event time
+            double seconds = ticksToSeconds(min_tick - timerStartTick);
+            while((timer.running_time_s()) <= seconds)
             {
                 continue;
             }
-
-//            std::cout << "running time: " << timer.running_time_s() << std::endl;
-        
-            output.send(*(nextEvent->msg));
-
-            if (shouldSequence == false) 
+            const mm::MidiMessage& msg = *(nextEvent->msg);
+            if (msg.isMetaEvent() && msg.getMetaEventSubtype() == MetaEventType::TEMPO_CHANGE) {
+                const uint8_t *pdata = &(msg.data[3]);
+                uint32_t us_per_quarter_note = read_uint24_be(pdata);
+                std::cout << "Tempo us/quarter note: " << us_per_quarter_note << std::endl;
+                this->beatsPerMinute = 60000000/us_per_quarter_note;
+                std::cout << "BPM: " << this->beatsPerMinute << std::endl;
+            } else {
+                output.send(msg);
+            }
+            if (shouldSequence == false)
                 break;
 
-            lastTime = nextEvent->timestamp;
             eventCursors[nextEvent->trackIdx]++;
         }
     }
@@ -187,9 +182,9 @@ void MidiSequencePlayer::stop()
     shouldSequence = false;
 }
     
-void MidiSequencePlayer::addTimestampedEvent(int track, double when, std::shared_ptr<TrackEvent> ev)
+void MidiSequencePlayer::addTickEvent(int track, int when, std::shared_ptr<TrackEvent> ev)
 {
-    if (ev->m->isMetaEvent() == false)
+    if (ev->m->isMetaEvent() == false || ev->m->getMetaEventSubtype() == MetaEventType::TEMPO_CHANGE)
     {
         eventList[track].push_back(MidiPlayerEvent(when, ev->m, track));
     }
