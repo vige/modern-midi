@@ -51,7 +51,7 @@ TrackEvent * parseEvent(int tick, int track, uint8_t const *& dataStart, Message
     auto m = std::make_shared<MidiMessage>();
     TrackEvent * event = new TrackEvent(tick, track, m);
 
-    if (((uint8_t) type & 0xF) == 0xF) 
+    if (((uint8_t) type & 0x8F) == 0x8F)
     {
         // Meta event 
         if ((uint8_t) type == 0xFF) 
@@ -146,7 +146,7 @@ TrackEvent * parseEvent(int tick, int track, uint8_t const *& dataStart, Message
         }
         else 
         {
-            throw std::runtime_error("Unrecognised MIDI event type byte");
+            throw std::runtime_error("Unrecognised MIDI event type byte: " + std::to_string((uint8_t)type));
         }
     }
 
