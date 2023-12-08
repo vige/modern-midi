@@ -120,7 +120,7 @@ void MidiSequencePlayer::run()
     bool running = true;
     int timerStartTick = 0;
     u_int8_t runningStatus = 0;
-    
+
     PlatformTimer timer;
     timer.start();
 
@@ -147,7 +147,8 @@ void MidiSequencePlayer::run()
         } else {
             // calculate next event time
             double seconds = ticksToSeconds(min_tick - timerStartTick);
-            while((timer.running_time_s()) <= seconds)
+            double runningTimeNow = timer.running_time_s();
+            while((timer.running_time_s()) <= seconds || timer.running_time_s() <= runningTimeNow + 0.001)
             {
                 continue;
             }
@@ -163,8 +164,16 @@ void MidiSequencePlayer::run()
 
             } else {
                 if (msg.data[0] == runningStatus) {
+//                    std::cout << "sending running status event: ";
+//                    for(unsigned char i: msg.data)
+//                       std::cout << std::hex << (unsigned int)i << ' ';
+//                    std::cout << std::endl;
                     output.sendRunningStatus(msg);
                 } else {
+                    std::cout << "sending event: ";
+//                    for(unsigned char i: msg.data)
+//                       std::cout << std::hex << (unsigned int)i << ' ';
+//                    std::cout << std::endl;
                     output.send(msg);
                     runningStatus = msg.data[0];
                 }
