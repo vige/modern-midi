@@ -170,7 +170,7 @@ void MidiSequencePlayer::run()
 //                    std::cout << std::endl;
                     output.sendRunningStatus(msg);
                 } else {
-                    std::cout << "sending event: ";
+//                    std::cout << "sending event: ";
 //                    for(unsigned char i: msg.data)
 //                       std::cout << std::hex << (unsigned int)i << ' ';
 //                    std::cout << std::endl;
@@ -180,6 +180,11 @@ void MidiSequencePlayer::run()
             }
             if (shouldSequence == false) {
                 for(int i = 0; i < 0x0F; i++){
+                    double runningTimeNow = timer.running_time_s();
+                    while(timer.running_time_s() <= runningTimeNow + 0.001)
+                    {
+                        continue;
+                    }
                     MidiMessage allSoundOff(0xB0|i,120,0, 0.0);
                     output.send(allSoundOff);
                 }
